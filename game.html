@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NBA HTML</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    #hoop {
+      width: 150px;
+      height: 20px;
+      background-color: orange;
+      position: absolute;
+      top: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      display: inline-block;
+      border-radius: 4px;
+    }
+    #ball {
+      width: 20px;
+      height: 20px;
+      background-color: red;
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 50%;
+    }
+    .rande {
+      position: absolute;
+      bottom: 100px;
+      left: 40%;
+    }
+    input[type="range"] {
+      width: 300px;
+    }
+
+    /* Dodatkowe style dla różnych pozycji suwaka */
+    input[type="range"]::-webkit-slider-thumb {
+      background-color: red;
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      background-color: red;
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+    }
+    p {
+      font-size: 20px;
+    }
+    .debug {
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <p>Liczba punktów: <span id="score">0</span></p>
+  <div id="hoop"></div>
+  <div id="ball"></div>
+  <svg width="400" height="300">
+    <circle cx="200" cy="200" r="5" fill="red"></circle>
+    <line id="line" x2="200" y2="100" x1="200" y1="200" stroke="blue" stroke-width="2"></line>
+  </svg>
+  <input id="slider" class="rande" type="range" min="0" max="400" value="0" step="1">
+  <br>
+  <a class="debug">Wartość suwaka: <span id="sliderValue">200</span></a>
+
+  <script>
+    const slider = document.getElementById("slider");
+    const line = document.getElementById("line");
+    const scoreDisplay = document.getElementById("score"); // Dodajemy deklarację zmiennej scoreDisplay
+
+    // Funkcja do aktualizacji pozycji punktu B (linii) na podstawie wartości suwaka
+    function updateLinePosition() {
+      const value = slider.value;
+      const x2 = parseInt(value); // Wartość suwaka jako współrzędna X punktu B
+
+      line.setAttribute("x2", x2); // Aktualizacja współrzędnej X punktu B
+      document.getElementById("sliderValue").textContent = value; // Aktualizacja wartości suwaka
+    }
+
+    // Dodajemy nasłuchiwacz zdarzenia na zmianę wartości suwaka
+    slider.addEventListener("input", updateLinePosition);
+
+    // Inicjalizujemy pozycję linii przy załadowaniu strony
+    updateLinePosition();
+
+    let score = 0;
+
+    const hoop = document.getElementById("hoop");
+    const ball = document.getElementById("ball");
+
+    // Funkcja obsługująca rzut piłki do kosza
+    function throwBall() {
+      const hoopPosition = hoop.getBoundingClientRect();
+      const ballPosition = ball.getBoundingClientRect();
+
+      if (parseInt(slider.value) === 200) {
+        // Gracz zdobywa punkt
+        score++;
+        scoreDisplay.textContent = score;
+        alert("Zdobyłeś punkt!");
+      } else {
+        // Brak trafienia
+        alert("Niestety, nie udało się!");
+      }
+
+      slider.value = 0;
+      updateLinePosition();
+    }
+
+    // Nasłuchiwanie kliknięcia na piłkę
+    ball.addEventListener("click", throwBall);
+  </script>
+</body>
+</html>
